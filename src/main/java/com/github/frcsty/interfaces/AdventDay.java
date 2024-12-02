@@ -2,7 +2,9 @@ package com.github.frcsty.interfaces;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public interface AdventDay {
 
@@ -17,6 +19,17 @@ public interface AdventDay {
         } catch (Exception exception) {
             throw new RuntimeException("Failed to retrieve file input");
         }
+    }
+
+    default <T> List<T> readLines(String fileName, Function<String, T> mappingFunction) {
+        final List<String> lines = this.readLines(fileName);
+        final List<T> modified = new ArrayList<>();
+
+        for (final String line : lines) {
+            modified.add(mappingFunction.apply(line));
+        }
+
+        return modified;
     }
 
     default char[][] readAsCharArray(String fileName) {
