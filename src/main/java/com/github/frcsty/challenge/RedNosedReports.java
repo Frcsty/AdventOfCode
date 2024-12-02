@@ -75,17 +75,14 @@ public class RedNosedReports implements AdventDay {
 
                 final LevelOrder currentOrder = LevelOrder.getForValues(previous, level);
                 if (currentOrder == LevelOrder.EQUAL) {
-                    System.out.printf("%s is unsafe due to no order (no value difference)%n", this);
                     return index;
                 }
 
                 if (previous != -1 && Math.abs(level - previous) > 3) {
-                    System.out.printf("%s is unsafe due to value difference (valueDiff=%s)%n", this, Math.abs(level - previous));
                     return index;
                 }
 
                 if (order != null && currentOrder != order && previous != -1) {
-                    System.out.printf("%s is unsafe due to ordering (previous=%s,current=%s)%n", this, order, currentOrder);
                     return index;
                 }
 
@@ -93,7 +90,6 @@ public class RedNosedReports implements AdventDay {
                 previous = level;
             }
 
-            //System.out.printf("%s is safe%n", this);
             return -1;
         }
 
