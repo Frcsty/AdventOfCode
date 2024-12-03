@@ -70,19 +70,23 @@ public class RedNosedReports implements AdventDay {
             LevelOrder order = null;
             int previous = -1;
 
+            System.out.println(this);
             for (int index = 0; index < levels.size(); index++) {
                 final int level = levels.get(index);
 
                 final LevelOrder currentOrder = LevelOrder.getForValues(previous, level);
                 if (currentOrder == LevelOrder.EQUAL) {
+                    System.out.println("%s failed due to equal values (previous=%s,current=%s)".formatted(this, previous, level));
                     return index;
                 }
 
                 if (previous != -1 && Math.abs(level - previous) > 3) {
+                    System.out.println("%s failed due to value difference (difference=%s)".formatted(this, Math.abs(level - previous)));
                     return index;
                 }
 
                 if (order != null && currentOrder != order && previous != -1) {
+                    System.out.println("%s failed due to order change (previous=%s,order=%s)".formatted(this, order, currentOrder));
                     return index;
                 }
 
@@ -92,6 +96,7 @@ public class RedNosedReports implements AdventDay {
 
             return -1;
         }
+
 
         public boolean isSafe() {
             return this.isSafe(this.levels) == -1;
