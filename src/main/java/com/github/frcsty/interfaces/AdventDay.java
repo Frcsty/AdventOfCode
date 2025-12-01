@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface AdventDay {
 
@@ -30,6 +31,10 @@ public interface AdventDay {
         }
 
         return modified;
+    }
+
+    default String readLine(String fileName) {
+        return String.join("", this.readLines(fileName));
     }
 
     default char[][] readAsCharArray(String fileName) {
