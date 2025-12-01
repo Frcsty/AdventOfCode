@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AdventDay {
 
-    String FILE_PATH = "G:\\Projects\\IntelliJ\\Random\\AdventOfCode\\src\\main\\resources";
+    String FILE_PATH = "G:\\Projects\\IntelliJ\\Random\\AdventOfCode\\src\\main\\resources\\";
 
     int day();
 
