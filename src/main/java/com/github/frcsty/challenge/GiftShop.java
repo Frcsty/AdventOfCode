@@ -23,7 +23,7 @@ public class GiftShop implements AdventDay {
         System.out.println("[1] Total count: " + totalCount);
     }
 
-    @PartLoader
+    @PartLoader(part = 2)
     public void solveSecond() {
         long totalCount = 0;
         for (final String line : this.readLines(INPUT_FILE)) {

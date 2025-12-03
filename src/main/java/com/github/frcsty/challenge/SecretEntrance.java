@@ -8,18 +8,44 @@ import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 
 public class SecretEntrance implements AdventDay {
-    private final Counter counter = new Counter();
 
+    private static final int[] DIAL_POSITIONS = IntStream.range(0, 100).toArray();
+    private static final int STARTING_DIAL_POSITION = 50;
     private static final String INPUT_FILE = "secret_entrance";
 
     @PartLoader
     public void solve() {
-        System.out.println("[1]: " + this.counter.getCount());
+        final Counter counter = new Counter();
+
+        System.out.println("[1]: " + counter.getCount());
     }
 
     @PartLoader(part = 2)
     public void solveSecond() {
-        System.out.println("[2]: " + this.counter.getSecondCount());
+        long totalZeroOccurrences = 0;
+        int currentDialPosition = STARTING_DIAL_POSITION;
+
+        for (final String action : SecretEntrance.this.readLines(INPUT_FILE)) {
+            if (action.isEmpty()) {
+                continue;
+            }
+
+            final Counter.Direction direction = Counter.Direction.SYMBOL_MAPPED.get(action.substring(0, 1));
+            final int distance = Integer.parseInt(action.substring(1));
+
+            for (int i = 0; i < distance; i++) {
+                final int nextPosition = direction.apply(1);
+                final int nextDialPosition = ((currentDialPosition + nextPosition) % DIAL_POSITIONS.length + DIAL_POSITIONS.length) % DIAL_POSITIONS.length;
+
+                if (nextDialPosition == 0) {
+                    totalZeroOccurrences++;
+                }
+
+                currentDialPosition = nextDialPosition;
+            }
+        }
+
+        System.out.println("[2]: " + totalZeroOccurrences);
     }
 
     @Override
@@ -30,10 +56,6 @@ public class SecretEntrance implements AdventDay {
     private class Counter {
         private int currentDialPosition;
         private int occurrenceAtZero;
-        private int rollingOccurrenceAtZero;
-
-        private static final int STARTING_DIAL_POSITION = 50;
-        private static final int[] DIAL_POSITIONS = IntStream.range(0, 100).toArray();
 
         public Counter() {
             this.currentDialPosition = STARTING_DIAL_POSITION;
@@ -45,10 +67,6 @@ public class SecretEntrance implements AdventDay {
             return this.occurrenceAtZero;
         }
 
-        public int getSecondCount() {
-            return this.rollingOccurrenceAtZero + this.occurrenceAtZero;
-        }
-
         private void executeActions() {
             for (final String action : SecretEntrance.this.readLines(INPUT_FILE)) {
                 if (action.isEmpty()) {
@@ -57,8 +75,6 @@ public class SecretEntrance implements AdventDay {
 
                 final Direction direction = Direction.SYMBOL_MAPPED.get(action.substring(0, 1));
                 final int distance = Integer.parseInt(action.substring(1));
-
-                System.out.println("[" + direction.symbol + "] " + distance + ": " + this.currentDialPosition + " (" + this.occurrenceAtZero + ")");
 
                 this.currentDialPosition = this.getNextDialPosition(direction, distance);
                 if (this.currentDialPosition == 0) {
@@ -69,17 +85,7 @@ public class SecretEntrance implements AdventDay {
 
         private int getNextDialPosition(Direction direction, int distance) {
             final int nextPosition = direction.apply(distance);
-            final int wrappedPosition = ((this.currentDialPosition + nextPosition) % DIAL_POSITIONS.length + DIAL_POSITIONS.length) % DIAL_POSITIONS.length;
-            final int before = Math.floorDiv(this.currentDialPosition, DIAL_POSITIONS.length);
-            final int after  = Math.floorDiv(this.currentDialPosition + nextPosition, DIAL_POSITIONS.length);
-
-            int occurrences = Math.abs(after - before);
-            if (wrappedPosition == 0 && occurrences > 0) {
-                occurrences -= 1;
-            }
-
-            this.rollingOccurrenceAtZero += occurrences;
-            return wrappedPosition;
+            return ((this.currentDialPosition + nextPosition) % DIAL_POSITIONS.length + DIAL_POSITIONS.length) % DIAL_POSITIONS.length;
         }
 
         private enum Direction {
